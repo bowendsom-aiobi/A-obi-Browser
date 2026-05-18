@@ -1,5 +1,9 @@
+# productName MUST stay ASCII: a non-ASCII char (the ï) in the macOS
+# bundle/executable/Helper path makes Chromium hard-crash (EXC_BREAKPOINT)
+# at startup. The visible brand "Aïobi Browser" is preserved via
+# CFBundleDisplayName/CFBundleName below and the in-app UI strings.
 appId: com.aiobi.browser
-productName: Aïobi Browser
+productName: Aiobi Browser
 copyright: © Aïobi
 
 directories:
@@ -28,6 +32,11 @@ mac:
   notarize: false
   icon: build/icon.icns
   extendInfo:
+    # CFBundleName MUST be ASCII (Chromium derives internal paths from it;
+    # a ï here = EXC_BREAKPOINT at startup). CFBundleDisplayName carries the
+    # real brand with the tréma — that is what Finder/Dock/menu bar show.
+    CFBundleName: Aiobi Browser
+    CFBundleDisplayName: Aïobi Browser
     NSCameraUsageDescription: Aïobi Browser utilise la caméra pour les appels vidéo.
     NSMicrophoneUsageDescription: Aïobi Browser utilise le microphone pour les appels audio et vidéo.
 
