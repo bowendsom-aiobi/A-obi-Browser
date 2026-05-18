@@ -1,11 +1,14 @@
 {
   "name": "aiobi-browser",
   "productName": "Aïobi Browser",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Aïobi — a simple, private web browser.",
   "private": true,
   "license": "UNLICENSED",
-  "author": "Aïobi",
+  "author": {
+    "name": "Aïobi",
+    "email": "ty4pj8zxzd@privaterelay.appleid.com"
+  },
   "main": "src/main/index.js",
   "repository": {
     "type": "git",
