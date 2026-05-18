@@ -1,0 +1,31 @@
+{
+  "name": "aiobi-browser",
+  "productName": "Aïobi Browser",
+  "version": "0.1.0",
+  "description": "Aïobi — a simple, private web browser.",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": "Aïobi",
+  "main": "src/main/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bowendsom-aiobi/A-obi-Browser.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "smoke": "node scripts/smoke.js",
+    "fonts": "bash scripts/fetch-fonts.sh",
+    "icons": "bash scripts/make-icons.sh",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:linux": "electron-builder --linux --publish never",
+    "dist:win": "electron-builder --win --publish never"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.3"
+  },
+  "devDependencies": {
+    "electron": "^41.6.1",
+    "electron-builder": "^26.8.2"
+  }
+}

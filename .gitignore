@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/icon.iconset/
+*.log
+.DS_Store
+
+# Design handoff — vendored selectively into src/renderer, raw kept local
+*Design System-handoff*.zip
+.design-handoff/
+
+# Apple signing / notarization secrets — never commit
+.env
+*.p8
+build/AuthKey_*.p8

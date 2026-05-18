@@ -1,0 +1,201 @@
+/* ========================================================================
+   Aïobi — Design Tokens
+   Mono-accent violet system on pure white.
+   ======================================================================== */
+
+@import url('./fonts/fonts.css');
+
+:root {
+  /* ---------- Color ---------- */
+  /* Base surfaces */
+  --aio-white: #FFFFFF;
+  --aio-black: #000000;
+
+  /* Accent — the ONE color. Do not dilute with others. */
+  --aio-violet:       #7233CD;
+  --aio-violet-700:   #5C24A8;   /* press / active */
+  --aio-violet-300:   #B593E4;   /* hover tint / disabled fill */
+  --aio-violet-100:   #EDE2FA;   /* quietest wash, surfaces only */
+
+  /* Neutral gray ramp (derived from black @ opacity) — use sparingly. */
+  --aio-ink-90: rgba(0, 0, 0, 0.90);
+  --aio-ink-70: rgba(0, 0, 0, 0.70);
+  --aio-ink-50: rgba(0, 0, 0, 0.50);
+  --aio-ink-30: rgba(0, 0, 0, 0.30);
+  --aio-ink-15: rgba(0, 0, 0, 0.15);
+  --aio-ink-08: rgba(0, 0, 0, 0.08);
+  --aio-ink-04: rgba(0, 0, 0, 0.04);
+
+  /* Semantic foreground / background / border */
+  --fg-1: var(--aio-black);            /* primary text, high contrast */
+  --fg-2: var(--aio-ink-70);           /* secondary text */
+  --fg-3: var(--aio-ink-50);           /* tertiary, captions, meta */
+  --fg-muted: var(--aio-ink-30);       /* placeholder, disabled text */
+  --fg-accent: var(--aio-violet);      /* links, interactive */
+  --fg-on-accent: var(--aio-white);    /* text on violet */
+
+  --bg-1: var(--aio-white);            /* page */
+  --bg-2: var(--aio-ink-04);           /* raised surface / hover row */
+  --bg-accent: var(--aio-violet);      /* accent surface */
+  --bg-accent-soft: var(--aio-violet-100);
+
+  --border-1: var(--aio-ink-15);       /* default hairline */
+  --border-2: var(--aio-ink-08);       /* quieter divider */
+  --border-strong: var(--aio-black);   /* bold framing, buttons */
+  --border-accent: var(--aio-violet);
+
+  /* Focus ring */
+  --ring: 0 0 0 3px rgba(114, 51, 205, 0.35);
+
+  /* ---------- Typography ---------- */
+  --font-display: 'Clash Display', 'Satoshi', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:    ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+
+  /* Type scale — rem-based, 1rem = 16px */
+  --fs-display-xl: clamp(3.5rem, 6vw, 5.5rem);   /* 56–88 */
+  --fs-display-lg: clamp(2.75rem, 4.5vw, 4rem);  /* 44–64 */
+  --fs-h1: 3rem;        /* 48 */
+  --fs-h2: 2.25rem;     /* 36 */
+  --fs-h3: 1.75rem;     /* 28 */
+  --fs-h4: 1.375rem;    /* 22 */
+  --fs-lead: 1.25rem;   /* 20 */
+  --fs-body: 1rem;      /* 16 */
+  --fs-small: 0.875rem; /* 14 */
+  --fs-caption: 0.75rem;/* 12 */
+
+  /* Weights */
+  --fw-display: 600;       /* Clash Display Semibold is the default display weight */
+  --fw-display-bold: 700;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+  --fw-black: 900;
+
+  /* Line heights */
+  --lh-tight: 1.02;
+  --lh-snug: 1.15;
+  --lh-normal: 1.35;
+  --lh-relaxed: 1.55;
+
+  /* Tracking */
+  --ls-display: -0.02em;
+  --ls-tight: -0.01em;
+  --ls-normal: 0;
+  --ls-wide: 0.04em;      /* eyebrows / small caps */
+
+  /* ---------- Space ---------- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* ---------- Radii ---------- */
+  /* Aïobi's logo is heavy + rounded; UI radii follow suit. */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;     /* default card */
+  --radius-lg: 24px;     /* hero card */
+  --radius-xl: 32px;
+  --radius-pill: 999px;  /* pill buttons, chips */
+
+  /* ---------- Elevation ---------- */
+  /* Sparing. Prefer borders + flat surfaces. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.10);
+  /* No tinted/accent shadows — elevation stays neutral. */
+
+  /* ---------- Motion ---------- */
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.1, 1.1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 360ms;
+
+  /* ---------- Layout ---------- */
+  --container-narrow: 720px;
+  --container-base:   1100px;
+  --container-wide:   1360px;
+}
+
+/* ========================================================================
+   Element defaults — apply with `class="aio"` on a root, or copy into body.
+   ======================================================================== */
+
+.aio, .aio * { box-sizing: border-box; }
+
+.aio {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-1);
+  background: var(--bg-1);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.aio h1, .aio .h1,
+.aio h2, .aio .h2,
+.aio h3, .aio .h3,
+.aio h4, .aio .h4,
+.aio .display-xl, .aio .display-lg {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-tight);
+  color: var(--fg-1);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.aio .display-xl { font-size: var(--fs-display-xl); line-height: var(--lh-tight); }
+.aio .display-lg { font-size: var(--fs-display-lg); line-height: var(--lh-tight); }
+.aio h1, .aio .h1 { font-size: var(--fs-h1); }
+.aio h2, .aio .h2 { font-size: var(--fs-h2); letter-spacing: var(--ls-tight); }
+.aio h3, .aio .h3 { font-size: var(--fs-h3); letter-spacing: var(--ls-tight); line-height: var(--lh-snug); }
+.aio h4, .aio .h4 { font-size: var(--fs-h4); line-height: var(--lh-snug); }
+
+.aio p, .aio .body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-1);
+  margin: 0;
+  text-wrap: pretty;
+}
+.aio .lead { font-size: var(--fs-lead); line-height: var(--lh-normal); color: var(--fg-2); }
+.aio .small { font-size: var(--fs-small); }
+.aio .caption { font-size: var(--fs-caption); color: var(--fg-3); }
+.aio .eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--fg-accent);
+}
+
+.aio a {
+  color: var(--fg-accent);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.aio a:hover { opacity: 0.75; }
+
+.aio code, .aio .mono { font-family: var(--font-mono); font-size: 0.95em; }
+
+.aio hr { border: 0; border-top: 1px solid var(--border-1); margin: var(--space-6) 0; }
+
+/* Selection uses the accent */
+.aio ::selection { background: var(--aio-violet); color: var(--aio-white); }
+
+/* Focus */
+.aio :focus-visible { outline: none; box-shadow: var(--ring); border-radius: var(--radius-xs); }

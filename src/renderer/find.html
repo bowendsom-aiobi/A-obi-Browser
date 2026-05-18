@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; background: transparent; }
+      body {
+        display: flex;
+        align-items: center;
+        padding: 6px;
+        font-family: var(--font-body, "Satoshi", -apple-system, sans-serif);
+        user-select: none;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        width: 100%;
+        height: 100%;
+        padding: 0 6px 0 14px;
+        background: var(--aio-white, #fff);
+        border: 1px solid var(--aio-ink-08, rgba(0, 0, 0, 0.08));
+        border-radius: var(--radius-pill, 999px);
+        box-shadow: 0 10px 28px rgba(20, 12, 40, 0.18);
+      }
+      input {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        color: var(--aio-black, #000);
+        font: inherit;
+        font-size: 13px;
+        outline: none;
+        user-select: text;
+      }
+      input::placeholder { color: var(--aio-ink-30, rgba(0, 0, 0, 0.3)); }
+      #count {
+        flex: none;
+        font-size: 12px;
+        color: var(--aio-ink-50, rgba(0, 0, 0, 0.5));
+        padding: 0 6px;
+        white-space: nowrap;
+      }
+      button {
+        flex: none;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        background: transparent;
+        border-radius: 8px;
+        color: var(--aio-ink-50, rgba(0, 0, 0, 0.5));
+        cursor: pointer;
+      }
+      button:hover {
+        background: var(--aio-ink-04, rgba(0, 0, 0, 0.04));
+        color: var(--aio-black, #000);
+      }
+      svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.75;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <input id="q" type="text" spellcheck="false" autocomplete="off"
+             data-i18n-ph="find_ph" placeholder="Rechercher dans la page" />
+      <span id="count"></span>
+      <button id="prev" title="Précédent"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+      <button id="next" title="Suivant"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+      <button id="close" title="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg></button>
+    </div>
+    <script src="find.js"></script>
+  </body>
+</html>
