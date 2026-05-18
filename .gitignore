@@ -11,4 +11,8 @@ build/icon.iconset/
 # Apple signing / notarization secrets — never commit
 .env
 *.p8
+*.p12
+*.key
+*.csr
+*.cer
 build/AuthKey_*.p8

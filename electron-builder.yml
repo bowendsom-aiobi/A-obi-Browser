@@ -10,16 +10,19 @@ files:
   - src/**/*
   - package.json
 
-# Unsigned for now (signing/notarization added later via CI secrets).
-forceCodeSigning: false
+# Signed + notarized via CI secrets (Developer ID, App Store Connect API key).
+forceCodeSigning: true
 
 mac:
   category: public.app-category.productivity
   target:
     - dmg
     - zip
-  identity: null
-  notarize: false
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize: true
   icon: build/icon.icns
   extendInfo:
     NSCameraUsageDescription: Aïobi Browser utilise la caméra pour les appels vidéo.
