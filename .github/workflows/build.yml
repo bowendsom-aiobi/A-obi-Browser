@@ -15,12 +15,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: false
+      APPIMAGE_EXTRACT_AND_RUN: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
+
+      - name: Linux build deps (AppImage needs libfuse2)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libfuse2t64
 
       - run: npm ci
 
@@ -29,7 +34,7 @@ jobs:
       - name: Build (unsigned)
         run: npx --no-install electron-builder --publish never
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: aiobi-browser-${{ matrix.os }}
           path: |
