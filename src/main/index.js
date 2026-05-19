@@ -6,7 +6,7 @@ const { app, BaseWindow, WebContentsView, ipcMain, shell, dialog, session } = re
 const { TabManager } = require('./tabs');
 const { GEOM, compute, clampChat, findRect } = require('./layout');
 const { getEngine, resolveInput, SEARCH_ENGINES } = require('./search-engines');
-const { hardenPartition } = require('./session');
+const { hardenPartition, USER_AGENT } = require('./session');
 const { buildAppMenu } = require('./menu');
 const i18n = require('./i18n');
 const downloads = require('./downloads');
@@ -25,6 +25,9 @@ const CHROME_HTML = path.join(RENDERER, 'chrome.html');
 const CHAT_GRIP_HTML = path.join(RENDERER, 'chat-grip.html');
 const FIND_HTML = path.join(RENDERER, 'find.html');
 const EDGE_HTML = path.join(RENDERER, 'edge.html');
+
+app.userAgentFallback = USER_AGENT;
+app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
 
 let win = null;
 let sidebar = null;

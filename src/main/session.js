@@ -4,6 +4,38 @@ const { session, systemPreferences } = require('electron');
 
 const configured = new Set();
 
+// A clean Chrome User-Agent (no "Electron/" nor app-name tokens): those make
+// Cloudflare / Turnstile flag the client as a bot and loop the "verify you
+// are a human" challenge forever. Must be applied on every request — incl.
+// the cross-origin challenges.cloudflare.com iframe (Electron #40374) — and
+// the Sec-CH-UA client hints must stay consistent with it.
+const CHROME_VERSION = process.versions.chrome || '120.0.0.0';
+
+function buildUserAgent() {
+  let platform;
+  if (process.platform === 'darwin') platform = 'Macintosh; Intel Mac OS X 10_15_7';
+  else if (process.platform === 'win32') platform = 'Windows NT 10.0; Win64; x64';
+  else platform = 'X11; Linux x86_64';
+  return `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${CHROME_VERSION} Safari/537.36`;
+}
+
+const USER_AGENT = buildUserAgent();
+
+function clientHints() {
+  const major = CHROME_VERSION.split('.')[0];
+  let platform;
+  if (process.platform === 'darwin') platform = '"macOS"';
+  else if (process.platform === 'win32') platform = '"Windows"';
+  else platform = '"Linux"';
+  return {
+    'Sec-CH-UA': `"Not A(Brand";v="8", "Chromium";v="${major}", "Google Chrome";v="${major}"`,
+    'Sec-CH-UA-Mobile': '?0',
+    'Sec-CH-UA-Platform': platform,
+  };
+}
+
+const HINTS = clientHints();
+
 const CHECK_ALLOWED = new Set([
   'fullscreen',
   'clipboard-sanitized-write',
@@ -35,6 +67,13 @@ function hardenPartition(partition) {
 
   const ses = session.fromPartition(partition);
 
+  ses.setUserAgent(USER_AGENT);
+  ses.webRequest.onBeforeSendHeaders((details, callback) => {
+    details.requestHeaders['User-Agent'] = USER_AGENT;
+    for (const [k, v] of Object.entries(HINTS)) details.requestHeaders[k] = v;
+    callback({ requestHeaders: details.requestHeaders });
+  });
+
   ses.setPermissionCheckHandler((_wc, permission) => CHECK_ALLOWED.has(permission));
 
   ses.setPermissionRequestHandler(async (_wc, permission, callback, details) => {
@@ -47,4 +86,4 @@ function hardenPartition(partition) {
   });
 }
 
-module.exports = { hardenPartition };
+module.exports = { hardenPartition, USER_AGENT };
