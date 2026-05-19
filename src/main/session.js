@@ -1,6 +1,6 @@
 'use strict';
 
-const { session, systemPreferences } = require('electron');
+const { session, systemPreferences, desktopCapturer, Menu } = require('electron');
 
 const configured = new Set();
 
@@ -73,6 +73,29 @@ function hardenPartition(partition) {
     for (const [k, v] of Object.entries(HINTS)) details.requestHeaders[k] = v;
     callback({ requestHeaders: details.requestHeaders });
   });
+
+  // Screen sharing (getDisplayMedia, used by Meet/Zoom…). Granting the
+  // permission is not enough in Electron — a display-media handler must
+  // supply the source. macOS 14+ uses Apple's native picker (no custom UI);
+  // elsewhere, a minimal native menu of screens/windows.
+  ses.setDisplayMediaRequestHandler(async (_request, callback) => {
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] });
+      if (sources.length === 0) return callback();
+      if (sources.length === 1) return callback({ video: sources[0] });
+      const chosen = await new Promise((resolve) => {
+        const menu = Menu.buildFromTemplate([
+          ...sources.map((s) => ({ label: s.name || 'Source', click: () => resolve(s) })),
+          { type: 'separator' },
+          { label: 'Annuler', click: () => resolve(null) },
+        ]);
+        menu.popup({ callback: () => resolve(null) });
+      });
+      callback(chosen ? { video: chosen } : undefined);
+    } catch {
+      callback();
+    }
+  }, { useSystemPicker: true });
 
   ses.setPermissionCheckHandler((_wc, permission) => CHECK_ALLOWED.has(permission));
 
