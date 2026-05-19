@@ -27,7 +27,6 @@ export const STRINGS = {
     'feat.right.d': 'Docs, Sheets, Drive, Forms, Mail, Meet, Calendar — votre suite intégrée, à portée de clic.',
     'cta.title': 'Prêt à essayer ?',
     'cta.sub': 'Téléchargement direct, gratuit, sans compte.',
-    'foot.tag': 'Aïobi Browser — simple, élégant, privé.',
     'note.mac': 'macOS : au 1ᵉʳ lancement, clic droit sur l’app → Ouvrir.',
   },
   en: {
@@ -54,7 +53,6 @@ export const STRINGS = {
     'feat.right.d': 'Docs, Sheets, Drive, Forms, Mail, Meet, Calendar — your integrated suite, one click away.',
     'cta.title': 'Ready to try it?',
     'cta.sub': 'Direct download, free, no account.',
-    'foot.tag': 'Aïobi Browser — simple, elegant, private.',
     'note.mac': 'macOS: on first launch, right-click the app → Open.',
   },
 };

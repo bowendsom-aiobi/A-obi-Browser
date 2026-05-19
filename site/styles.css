@@ -165,13 +165,18 @@ img{max-width:100%;display:block}
 
 /* ---------- footer ---------- */
 .foot{
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  padding:56px 20px;border-top:1px solid var(--line);text-align:center;
+  text-align:center;overflow:hidden;border-top:1px solid var(--line);
+  padding:clamp(56px,11vw,128px) 12px 34px;
 }
-.foot img{height:22px;opacity:.8}
-.foot p{color:var(--muted);font-size:.92rem}
-.foot a{color:var(--violet);font-weight:600;font-size:.9rem}
-.foot small{color:var(--muted);opacity:.7}
+.foot-mark{
+  font-family:'Clash Display',sans-serif;font-weight:700;
+  font-size:clamp(3rem,17vw,13rem);line-height:.86;letter-spacing:-.035em;
+  white-space:nowrap;
+  background:linear-gradient(180deg,#ECEAF6 0%,#F6F5FB 70%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  user-select:none;
+}
+.foot small{display:block;margin-top:26px;color:var(--muted);opacity:.7;font-size:.82rem}
 
 /* ---------- reveal ----------
    Content is ALWAYS visible by default (no JS dependency). The entrance
