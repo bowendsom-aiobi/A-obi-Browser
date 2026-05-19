@@ -30,6 +30,7 @@ mac:
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
   notarize: false
+  artifactName: Aiobi-Browser-mac-${arch}.${ext}
   icon: build/icon.icns
   extendInfo:
     # CFBundleName MUST be ASCII (Chromium derives internal paths from it;
@@ -44,6 +45,7 @@ win:
   target:
     - nsis
     - zip
+  artifactName: Aiobi-Browser-windows-${arch}.${ext}
   icon: build/icon.ico
 
 nsis:
@@ -55,6 +57,7 @@ linux:
   target:
     - AppImage
     - deb
+  artifactName: Aiobi-Browser-linux-${arch}.${ext}
   category: Network
   icon: build/icon.png
 

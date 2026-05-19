@@ -1,0 +1,7 @@
+{
+  "name": "aiobi-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static landing site for Aïobi Browser (zero runtime dependencies)."
+}

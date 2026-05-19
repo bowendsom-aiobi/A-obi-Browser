@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aïobi Browser — simple, élégant, privé</title>
+<meta name="description" content="Aïobi Browser : un navigateur simple, élégant et privé. Téléchargement direct pour macOS, Windows et Linux." />
+<meta property="og:title" content="Aïobi Browser" />
+<meta property="og:description" content="Simple, élégant, privé. Votre navigateur, votre marque, votre monde." />
+<meta property="og:image" content="assets/img/browser.png" />
+<link rel="icon" href="assets/img/logo.svg" />
+<link rel="stylesheet" href="assets/fonts/fonts.css" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#top" aria-label="Aïobi Browser">
+    <img src="assets/img/logo.svg" alt="Aïobi" />
+  </a>
+  <nav class="nav-links">
+    <a href="#features" data-i18n="nav.features">Fonctionnalités</a>
+    <a href="#download" class="nav-cta" data-i18n="nav.download">Télécharger</a>
+    <span class="lang">
+      <button type="button" data-lang-btn="fr" aria-pressed="true">FR</button>
+      <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+    </span>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <canvas id="shader" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <p class="kicker" data-i18n="hero.kicker">Le navigateur</p>
+      <h1 class="display" data-i18n="hero.title">Aïobi Browser</h1>
+      <p class="tagline" data-i18n="hero.tagline">Simple, élégant, privé. Votre navigateur, votre marque, votre monde.</p>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" data-dl-primary href="https://github.com/bowendsom-aiobi/A-obi-Browser/releases/latest">
+          <span id="primary-label">Télécharger</span>
+        </a>
+        <a class="btn btn-ghost" href="#download" data-i18n="hero.other">Autres plateformes</a>
+      </div>
+      <p class="micro"><span data-i18n="hero.free">Gratuit · macOS, Windows, Linux</span> · <span class="ver" data-version hidden></span></p>
+
+      <div class="os-row">
+        <a class="os" data-dl="mac" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.7 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8-.7 0-1.9-.8-3.1-.8-1.6 0-3 .9-3.8 2.4-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 3 2.3 1.2-.1 1.6-.8 3.1-.8 1.4 0 1.8.8 3.1.8 1.3 0 2.1-1.1 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.5-1-2.5-3.9zM14.4 5.9c.7-.8 1.1-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.3z"/></svg>
+          <span><strong data-i18n="dl.mac">macOS</strong><em data-i18n="dl.mac.sub">Apple Silicon · .dmg</em></span>
+        </a>
+        <a class="os" data-dl="win" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7.1L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></svg>
+          <span><strong data-i18n="dl.win">Windows</strong><em data-i18n="dl.win.sub">Installeur · .exe</em></span>
+        </a>
+        <a class="os" data-dl="linux" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-2 0-3 1.7-3 3.5 0 1.2.5 2 .5 3 0 1.3-1.7 2.6-2.8 4.7C5.7 15.1 5 16.7 5 18c0 1.7 1 3 2.3 3 .9 0 1.4-.5 2-.9.6.4 1.6.9 2.7.9s2.1-.5 2.7-.9c.6.4 1.1.9 2 .9 1.3 0 2.3-1.3 2.3-3 0-1.3-.7-2.9-1.7-4.8-1.1-2.1-2.8-3.4-2.8-4.7 0-1 .5-1.8.5-3C15 3.7 14 2 12 2z"/></svg>
+          <span><strong data-i18n="dl.linux">Linux</strong><em data-i18n="dl.linux.sub">AppImage</em></span>
+        </a>
+      </div>
+      <p class="hint" data-i18n="note.mac">macOS : au 1ᵉʳ lancement, clic droit sur l’app → Ouvrir.</p>
+    </div>
+  </section>
+
+  <section class="showcase">
+    <div class="show-head reveal">
+      <h2 data-i18n="show.title">Pensé pour aller à l’essentiel</h2>
+      <p data-i18n="show.sub">Une barre latérale claire, vos onglets à gauche, et tout le reste qui s’efface.</p>
+    </div>
+    <div class="frame" data-tilt>
+      <img src="assets/img/browser.png" alt="Aïobi Browser" loading="lazy" />
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <h2 class="sec-title reveal" data-i18n="feat.title">Tout ce qu’il faut, rien de superflu</h2>
+    <div class="grid">
+      <article class="card reveal big">
+        <div class="card-body">
+          <h3 data-i18n="feat.chat.t">Chat IA intégré</h3>
+          <p data-i18n="feat.chat.d">Ouvrez l’assistant Aïobi en panneau latéral, sans quitter votre page.</p>
+        </div>
+        <img src="assets/img/chat.png" alt="" loading="lazy" />
+      </article>
+      <article class="card reveal">
+        <div class="card-body">
+          <h3 data-i18n="feat.book.t">Signets élégants</h3>
+          <p data-i18n="feat.book.d">Vos pages sauvegardées, accessibles d’un geste.</p>
+        </div>
+        <img src="assets/img/bookmarks.png" alt="" loading="lazy" />
+      </article>
+      <article class="card reveal">
+        <div class="card-body">
+          <h3 data-i18n="feat.world.t">Aïobi World</h3>
+          <p data-i18n="feat.world.d">Docs, Sheets, Drive, Forms, Mail, Meet, Calendar — à portée de clic.</p>
+        </div>
+        <img src="assets/img/world.png" alt="" loading="lazy" />
+      </article>
+      <article class="card reveal mini">
+        <div class="card-body">
+          <h3 data-i18n="feat.priv.t">Privé par défaut</h3>
+          <p data-i18n="feat.priv.d">Pas de pistage, vos données chiffrées par l’OS.</p>
+        </div>
+      </article>
+      <article class="card reveal mini">
+        <div class="card-body">
+          <h3 data-i18n="feat.engine.t">Multi-moteurs</h3>
+          <p data-i18n="feat.engine.d">Brave par défaut, et cinq autres au choix.</p>
+        </div>
+      </article>
+      <article class="card reveal mini">
+        <div class="card-body">
+          <h3 data-i18n="feat.fast.t">Léger et rapide</h3>
+          <p data-i18n="feat.fast.d">Le moteur de Chrome, l’épure d’Aïobi.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="download" class="download reveal">
+    <h2 data-i18n="cta.title">Prêt à essayer ?</h2>
+    <p data-i18n="cta.sub">Téléchargement direct, gratuit, sans compte.</p>
+    <div class="os-row center">
+      <a class="os" data-dl="mac" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.7 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8-.7 0-1.9-.8-3.1-.8-1.6 0-3 .9-3.8 2.4-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 3 2.3 1.2-.1 1.6-.8 3.1-.8 1.4 0 1.8.8 3.1.8 1.3 0 2.1-1.1 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.5-1-2.5-3.9zM14.4 5.9c.7-.8 1.1-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.3z"/></svg>
+        <span><strong data-i18n="dl.mac">macOS</strong><em data-i18n="dl.mac.sub">Apple Silicon · .dmg</em></span>
+      </a>
+      <a class="os" data-dl="win" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7.1L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></svg>
+        <span><strong data-i18n="dl.win">Windows</strong><em data-i18n="dl.win.sub">Installeur · .exe</em></span>
+      </a>
+      <a class="os" data-dl="linux" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-2 0-3 1.7-3 3.5 0 1.2.5 2 .5 3 0 1.3-1.7 2.6-2.8 4.7C5.7 15.1 5 16.7 5 18c0 1.7 1 3 2.3 3 .9 0 1.4-.5 2-.9.6.4 1.6.9 2.7.9s2.1-.5 2.7-.9c.6.4 1.1.9 2 .9 1.3 0 2.3-1.3 2.3-3 0-1.3-.7-2.9-1.7-4.8-1.1-2.1-2.8-3.4-2.8-4.7 0-1 .5-1.8.5-3C15 3.7 14 2 12 2z"/></svg>
+        <span><strong data-i18n="dl.linux">Linux</strong><em data-i18n="dl.linux.sub">AppImage</em></span>
+      </a>
+    </div>
+    <p class="hint" data-i18n="note.mac">macOS : au 1ᵉʳ lancement, clic droit sur l’app → Ouvrir.</p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <img src="assets/img/logo.svg" alt="Aïobi" />
+  <p data-i18n="foot.tag">Aïobi Browser — simple, élégant, privé.</p>
+  <a href="https://github.com/bowendsom-aiobi/A-obi-Browser" data-i18n="foot.src">Code source</a>
+  <small>© Aïobi</small>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
