@@ -5,44 +5,33 @@
 
 const VERT = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 
+// Adapted from the flowing-line shader: a single violet intensity (no RGB
+// split = no rainbow) on near-white. Clearly visible, cinematic, elegant.
 const FRAG = `
 precision highp float;
 uniform vec2 u_res;
 uniform float u_time;
 
-// soft value noise
-float hash(vec2 q){ return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
-float noise(vec2 q){
-  vec2 i = floor(q), f = fract(q);
-  vec2 u = f*f*(3.0-2.0*f);
-  return mix(mix(hash(i), hash(i+vec2(1,0)), u.x),
-             mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), u.x), u.y);
-}
-float fbm(vec2 q){
-  float v = 0.0, a = 0.5;
-  for(int i=0;i<5;i++){ v += a*noise(q); q *= 2.03; a *= 0.5; }
-  return v;
-}
+void main(void){
+  vec2 uv = (gl_FragCoord.xy * 2.0 - u_res.xy) / min(u_res.x, u_res.y);
+  float t = u_time * 0.05;
+  float lineWidth = 0.0022;
 
-void main(){
-  vec2 uv = gl_FragCoord.xy / u_res.xy;
-  vec2 p = (gl_FragCoord.xy - 0.5*u_res.xy) / min(u_res.x, u_res.y);
-  float t = u_time * 0.035;
-
-  // domain-warped flow
-  vec2 q = vec2(fbm(p*1.4 + vec2(0.0, t)), fbm(p*1.4 + vec2(5.2, -t)));
-  float f = fbm(p*1.6 + 1.7*q + vec2(t*0.5, -t*0.3));
+  float g = 0.0;
+  for(int i = 0; i < 6; i++){
+    float fi = float(i);
+    g += lineWidth * (fi*fi + 1.0)
+       / abs(fract(t + fi*0.013) * 5.0 - length(uv) + mod(uv.x + uv.y, 0.22));
+  }
+  g = pow(clamp(g, 0.0, 1.0), 0.85);
 
   vec3 white  = vec3(1.0);
   vec3 violet = vec3(0.486, 0.361, 1.0);   // Aïobi #7C5CFF
-  vec3 mist   = vec3(0.949, 0.937, 0.992); // #F2EFFD
+  vec3 col = mix(white, violet, g * 0.9);
 
-  vec3 col = mix(white, mist, smoothstep(0.2, 0.9, f));
-  col = mix(col, violet, smoothstep(0.62, 0.98, f) * 0.55);
-
-  // gentle vignette toward pure white at the edges so content stays readable
-  float vig = smoothstep(1.15, 0.25, length(p));
-  col = mix(white, col, vig * 0.9);
+  // ease the very centre so the title/buttons stay crisp, keep edges alive
+  float calm = smoothstep(0.0, 0.65, length(uv));
+  col = mix(mix(white, col, 0.35), col, calm);
 
   gl_FragColor = vec4(col, 1.0);
 }`;
