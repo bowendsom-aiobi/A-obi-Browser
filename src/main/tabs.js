@@ -152,19 +152,43 @@ class TabManager {
     });
     wc.on('context-menu', (_e, params) => this.contextMenu(wc, params));
 
-    wc.setWindowOpenHandler(({ url: target }) => {
+    wc.setWindowOpenHandler(({ url: target, disposition, features }) => {
       let proto = '';
       try {
         proto = new URL(target).protocol;
       } catch {
         return { action: 'deny' };
       }
-      if (proto === 'http:' || proto === 'https:') {
-        this.onNewTabRequest(target);
-        return { action: 'deny' };
-      }
       if (proto === 'blob:' || proto === 'data:') {
         return { action: 'allow' };
+      }
+      if (proto === 'http:' || proto === 'https:') {
+        // A real popup (window.open with features, or new-window disposition)
+        // must stay a child window so window.opener is preserved — that is
+        // how OAuth / "Sign in with Google" posts the result back. Flattening
+        // it into a tab severs the opener -> postMessage on null.
+        const isPopup =
+          disposition === 'new-window' ||
+          (typeof features === 'string' && features.length > 0);
+        if (isPopup) {
+          return {
+            action: 'allow',
+            overrideBrowserWindowOptions: {
+              width: 480,
+              height: 640,
+              minimizable: false,
+              fullscreenable: false,
+              webPreferences: {
+                partition: 'persist:browser',
+                sandbox: true,
+                contextIsolation: true,
+                nodeIntegration: false,
+              },
+            },
+          };
+        }
+        this.onNewTabRequest(target);
+        return { action: 'deny' };
       }
       if (proto !== 'about:' && proto !== 'file:') shell.openExternal(target);
       return { action: 'deny' };
