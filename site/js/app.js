@@ -42,24 +42,9 @@ function wireDownloads(links) {
 }
 
 function wireScrollReveal() {
-  if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.reveal').forEach((e) => e.classList.add('in'));
-    return;
-  }
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-  document.querySelectorAll('.reveal').forEach((e) => io.observe(e));
-
-  // Scroll-driven tilt of the showcase frame (cheap, rAF-throttled).
+  // Reveal is pure CSS (scroll-timeline) and content is visible without JS.
+  // This only adds the scroll-driven tilt of the showcase frame as an
+  // optional enhancement (cheap, rAF-throttled).
   const frame = document.querySelector('[data-tilt]');
   if (frame && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let ticking = false;
