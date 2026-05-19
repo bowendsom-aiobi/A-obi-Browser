@@ -4,11 +4,13 @@ const { session, systemPreferences, desktopCapturer, Menu } = require('electron'
 
 const configured = new Set();
 
-// A clean Chrome User-Agent (no "Electron/" nor app-name tokens): those make
-// Cloudflare / Turnstile flag the client as a bot and loop the "verify you
-// are a human" challenge forever. Must be applied on every request — incl.
-// the cross-origin challenges.cloudflare.com iframe (Electron #40374) — and
-// the Sec-CH-UA client hints must stay consistent with it.
+// A clean Chrome User-Agent (no "Electron/" nor app-name tokens). It is set
+// at the Chromium PROCESS level (index.js: --user-agent switch) so Chromium
+// itself generates matching Sec-CH-UA client hints consistently on EVERY
+// request — incl. cross-origin iframes and XHR. Manually forcing Sec-CH-UA
+// via onBeforeSendHeaders made the UA/hints inconsistent and broke Google
+// Calendar's data API consistency check (Gmail tolerated it, Calendar did
+// not). This UA string is exported for app.userAgentFallback + the switch.
 const CHROME_VERSION = process.versions.chrome || '120.0.0.0';
 
 function buildUserAgent() {
@@ -20,21 +22,6 @@ function buildUserAgent() {
 }
 
 const USER_AGENT = buildUserAgent();
-
-function clientHints() {
-  const major = CHROME_VERSION.split('.')[0];
-  let platform;
-  if (process.platform === 'darwin') platform = '"macOS"';
-  else if (process.platform === 'win32') platform = '"Windows"';
-  else platform = '"Linux"';
-  return {
-    'Sec-CH-UA': `"Not A(Brand";v="8", "Chromium";v="${major}", "Google Chrome";v="${major}"`,
-    'Sec-CH-UA-Mobile': '?0',
-    'Sec-CH-UA-Platform': platform,
-  };
-}
-
-const HINTS = clientHints();
 
 const CHECK_ALLOWED = new Set([
   'fullscreen',
@@ -68,11 +55,6 @@ function hardenPartition(partition) {
   const ses = session.fromPartition(partition);
 
   ses.setUserAgent(USER_AGENT);
-  ses.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = USER_AGENT;
-    for (const [k, v] of Object.entries(HINTS)) details.requestHeaders[k] = v;
-    callback({ requestHeaders: details.requestHeaders });
-  });
 
   // Screen sharing (getDisplayMedia, used by Meet/Zoom…). Granting the
   // permission is not enough in Electron — a display-media handler must

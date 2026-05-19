@@ -1,6 +1,43 @@
 'use strict';
 
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webFrame } = require('electron');
+
+// Inject a real-Chrome-shaped JS environment into the MAIN world before any
+// page script runs. Needed because Google's OAuth "less secure browser" check
+// fingerprints navigator.userAgentData + window.chrome, beyond the UA string.
+(() => {
+  const major = (process.versions.chrome || '120').split('.')[0];
+  const platform =
+    process.platform === 'darwin' ? 'macOS' : process.platform === 'win32' ? 'Windows' : 'Linux';
+  webFrame.executeJavaScript(
+    `(() => {
+      try {
+        const brands = [
+          { brand: 'Not(A:Brand', version: '99' },
+          { brand: 'Google Chrome', version: '${major}' },
+          { brand: 'Chromium', version: '${major}' },
+        ];
+        const uaData = {
+          brands, mobile: false, platform: '${platform}',
+          getHighEntropyValues(hints) {
+            return Promise.resolve({
+              brands, mobile: false, platform: '${platform}',
+              platformVersion: '14.0.0', architecture: 'arm', bitness: '64', model: '',
+              uaFullVersion: '${major}.0.0.0',
+              fullVersionList: brands.map(b => ({ brand: b.brand, version: b.version + '.0.0.0' })),
+            });
+          },
+          toJSON() { return { brands, mobile: false, platform: '${platform}' }; },
+        };
+        Object.defineProperty(navigator, 'userAgentData', { value: uaData, configurable: true });
+        if (!window.chrome) window.chrome = {};
+        if (!window.chrome.runtime) window.chrome.runtime = { id: undefined };
+        Object.defineProperty(navigator, 'webdriver', { value: undefined, configurable: true });
+      } catch (e) {}
+    })();`,
+    true
+  ).catch(() => {});
+})();
 
 const i18nData = ipcRenderer.sendSync('i18n:get');
 let curLang = i18nData.lang;

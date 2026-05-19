@@ -27,7 +27,12 @@ const FIND_HTML = path.join(RENDERER, 'find.html');
 const EDGE_HTML = path.join(RENDERER, 'edge.html');
 
 app.userAgentFallback = USER_AGENT;
+app.commandLine.appendSwitch('user-agent', USER_AGENT);
 app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
+app.commandLine.appendSwitch(
+  'disable-features',
+  'ThirdPartyStoragePartitioning,PrivacySandboxSettings4,TrackingProtection3pcd,TpcdMetadataGrants,TpcdHeuristicsGrants,DeviceBoundSessions'
+);
 
 let win = null;
 let sidebar = null;
