@@ -69,11 +69,7 @@ img{max-width:100%;display:block}
   background:linear-gradient(180deg,#0b0b0f 30%,#3a3550 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.tagline{
-  font-size:clamp(1.05rem,2.3vw,1.45rem);color:var(--muted);
-  max-width:620px;margin:22px auto 38px;font-weight:500;
-}
-.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px}
 .btn{
   display:inline-flex;align-items:center;gap:10px;cursor:pointer;
   font-weight:700;font-size:1rem;border-radius:14px;padding:16px 30px;
