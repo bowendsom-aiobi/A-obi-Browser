@@ -5,6 +5,7 @@ const path = require('node:path');
 const { app, shell } = require('electron');
 
 const items = [];
+const live = new Map();
 let seq = 0;
 let onChange = () => {};
 
@@ -47,6 +48,7 @@ function init(ses, notify) {
       startedAt: Date.now(),
     };
     items.unshift(record);
+    live.set(record.id, item);
     notifyChange();
 
     item.on('updated', (_e, state) => {
@@ -55,8 +57,10 @@ function init(ses, notify) {
       notifyChange();
     });
     item.once('done', (_e, state) => {
-      record.state = state === 'completed' ? 'completed' : 'failed';
+      record.state =
+        state === 'completed' ? 'completed' : state === 'cancelled' ? 'cancelled' : 'failed';
       record.received = item.getReceivedBytes();
+      live.delete(record.id);
       notifyChange();
     });
   });
@@ -74,6 +78,11 @@ function reveal(p) {
   shell.showItemInFolder(p);
 }
 
+function cancel(id) {
+  const item = live.get(id);
+  if (item) item.cancel();
+}
+
 function clearFinished() {
   for (let i = items.length - 1; i >= 0; i -= 1) {
     if (items[i].state !== 'progressing') items.splice(i, 1);
@@ -81,4 +90,4 @@ function clearFinished() {
   notifyChange();
 }
 
-module.exports = { init, list, open, reveal, clearFinished };
+module.exports = { init, list, open, reveal, cancel, clearFinished };

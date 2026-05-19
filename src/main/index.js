@@ -542,6 +542,7 @@ function wireIpc() {
   ipcMain.handle('downloads:list', internalOnly(() => downloads.list()));
   ipcMain.handle('downloads:open', internalOnly((_e, p) => downloads.open(p)));
   ipcMain.handle('downloads:reveal', internalOnly((_e, p) => downloads.reveal(p)));
+  ipcMain.handle('downloads:cancel', internalOnly((_e, id) => downloads.cancel(id)));
   ipcMain.handle('downloads:clear', internalOnly(() => downloads.clearFinished()));
 }
 

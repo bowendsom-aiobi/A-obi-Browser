@@ -52,6 +52,8 @@ const STRINGS = {
     dl_empty: 'Aucun téléchargement.',
     dl_done: 'Terminé',
     dl_failed: 'Échec',
+    dl_cancel: 'Annuler',
+    dl_cancelled: 'Annulé',
     reveal: 'Afficher dans le dossier',
     delete: 'Supprimer',
 
@@ -138,6 +140,8 @@ const STRINGS = {
     dl_empty: 'No downloads.',
     dl_done: 'Completed',
     dl_failed: 'Failed',
+    dl_cancel: 'Cancel',
+    dl_cancelled: 'Cancelled',
     reveal: 'Show in folder',
     delete: 'Delete',
 

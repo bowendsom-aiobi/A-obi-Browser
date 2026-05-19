@@ -169,7 +169,9 @@ async function render() {
             ? `${humanBytes(d.received)} / ${humanBytes(d.total)}`
             : d.state === 'completed'
               ? I.t('dl_done')
-              : I.t('dl_failed');
+              : d.state === 'cancelled'
+                ? I.t('dl_cancelled')
+                : I.t('dl_failed');
         const row = el('div', 'row');
         const body = el('div', 'body');
         body.append(el('span', 'title', d.name));
@@ -184,6 +186,15 @@ async function render() {
           });
           row.append(folder);
           row.addEventListener('click', () => I.downloadOpen(d.path));
+        } else if (d.state === 'progressing') {
+          const x = el('button', 'x', '✕');
+          x.title = I.t('dl_cancel');
+          x.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            await I.downloadCancel(d.id);
+            render();
+          });
+          row.append(x);
         }
         list.append(row);
       }

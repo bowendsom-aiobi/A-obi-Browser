@@ -38,6 +38,7 @@ contextBridge.exposeInMainWorld('aiobiInternal', {
   downloads: () => ipcRenderer.invoke('downloads:list'),
   downloadOpen: (p) => ipcRenderer.invoke('downloads:open', p),
   downloadReveal: (p) => ipcRenderer.invoke('downloads:reveal', p),
+  downloadCancel: (id) => ipcRenderer.invoke('downloads:cancel', id),
   downloadsClear: () => ipcRenderer.invoke('downloads:clear'),
   onDownloads: (cb) => {
     const listener = () => cb();
