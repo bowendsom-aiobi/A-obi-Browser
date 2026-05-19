@@ -125,18 +125,34 @@ img{max-width:100%;display:block}
 /* ---------- features ---------- */
 .features{padding:clamp(40px,8vw,110px) clamp(20px,5vw,48px);max-width:var(--max);margin:0 auto}
 .sec-title{font-size:clamp(1.9rem,4.6vw,3.2rem);max-width:14ch;margin-bottom:48px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:linear-gradient(180deg,#fff,#fcfbff);overflow:hidden;
-  display:flex;flex-direction:column;
-  transition:transform .25s var(--ease),box-shadow .25s var(--ease);
+.bento{display:grid;grid-template-columns:1.5fr 1fr;gap:22px}
+.b-panel{
+  position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--line);border-radius:26px;padding:32px 32px 0;
+  background:linear-gradient(180deg,#fff,#fbfaff);
+  transition:box-shadow .3s var(--ease);
 }
-.card:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgba(11,11,15,.08)}
-.card-body{padding:26px 26px 20px}
-.card h3{font-size:1.35rem;margin-bottom:8px}
-.card p{color:var(--muted);font-size:.98rem}
-.card img{margin-top:auto;border-top:1px solid var(--line);background:var(--violet-soft)}
+.b-panel:hover{box-shadow:0 28px 64px rgba(11,11,15,.10)}
+.b-panel.violet{background:radial-gradient(120% 95% at 50% 0%,var(--violet-soft) 0%,#fff 70%)}
+.b-head h3{font-size:clamp(1.45rem,2.5vw,2rem)}
+.b-head p{color:var(--muted);margin:12px 0 0;max-width:44ch;font-size:1rem}
+.b-stack{position:relative;flex:1;margin-top:30px;min-height:330px;display:flex;align-items:flex-end}
+.b-base{
+  width:100%;border-radius:16px 16px 0 0;border:1px solid var(--line);border-bottom:0;
+  box-shadow:0 30px 60px rgba(11,11,15,.14);
+}
+.b-front{
+  position:absolute;right:24px;bottom:24px;width:46%;
+  border-radius:13px;border:1px solid var(--line);background:#fff;
+  box-shadow:0 26px 52px rgba(11,11,15,.22);
+  transform:rotate(3deg);transition:transform .3s var(--ease);
+}
+.b-panel:hover .b-front{transform:rotate(0deg) translateY(-4px)}
+.b-stack.center{align-items:flex-end;justify-content:center}
+.b-world{
+  width:72%;max-width:300px;border-radius:18px;align-self:flex-end;
+  box-shadow:0 26px 54px rgba(124,92,255,.24);
+}
 
 /* ---------- download cta ---------- */
 .download{
@@ -170,7 +186,11 @@ img{max-width:100%;display:block}
 }
 
 @media (max-width:860px){
-  .grid{grid-template-columns:1fr}
+  .bento{grid-template-columns:1fr}
+  .b-panel{padding:26px 22px 0;border-radius:20px}
+  .b-stack{min-height:auto;margin-top:24px}
+  .b-front{width:56%;right:10px;bottom:10px;transform:rotate(2deg)}
+  .b-world{width:62%}
   .frame{transform:none!important;border-radius:18px}
   .nav-links a[href="#features"]{display:none}
 }
@@ -178,4 +198,6 @@ img{max-width:100%;display:block}
   *{scroll-behavior:auto!important}
   .reveal{opacity:1;transform:none;transition:none}
   .frame{transform:none}
+  .b-front{transform:none}
+  .b-panel:hover .b-front{transform:none}
 }
