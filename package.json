@@ -1,7 +1,7 @@
 {
   "name": "aiobi-browser",
   "productName": "Aïobi Browser",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Aïobi — a simple, private web browser.",
   "private": true,
   "license": "UNLICENSED",
