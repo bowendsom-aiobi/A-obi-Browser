@@ -1,7 +1,7 @@
 {
   "name": "aiobi-browser",
   "productName": "Aïobi Browser",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Aïobi — a simple, private web browser.",
   "private": true,
   "license": "UNLICENSED",
@@ -25,6 +25,7 @@
     "dist:win": "electron-builder --win --publish never"
   },
   "dependencies": {
+    "@ghostery/adblocker-electron": "^2.17.3",
     "electron-updater": "^6.8.3"
   },
   "devDependencies": {
