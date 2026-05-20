@@ -48,12 +48,32 @@ function buildUserAgent() {
   return `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${CHROME_VERSION} Safari/537.36`;
 }
 
-const CF_USER_AGENT = buildUserAgent();
+const CHROME_UA = buildUserAgent();
 const SEC_CH_UA = `"Not(A:Brand";v="99", "Google Chrome";v="${CHROME_MAJOR}", "Chromium";v="${CHROME_MAJOR}"`;
 const SEC_CH_UA_PLATFORM =
   process.platform === 'darwin' ? '"macOS"' :
   process.platform === 'win32'  ? '"Windows"' : '"Linux"';
 const CLOUDFLARE_URLS = ['https://challenges.cloudflare.com/*'];
+// Google product apps sniff navigator.userAgent and redirect to a "browser
+// not supported" page when they see "Electron". Rewrite just the UA on
+// these domains — accounts.google.com / oauth endpoints are deliberately
+// excluded so the auth flow keeps the native UA (its JS/HTTP consistency
+// check rejects any mismatch).
+// mail.google.com excluded: Gmail compares navigator.userAgentData.brands
+// (which Chromium derives from its own branding — "Chromium" only in Electron)
+// against navigator.userAgent. Spoofing UA without also overriding
+// userAgentData in preload makes Gmail blank-page; the preload override is
+// what broke accounts.google.com previously. Leave Gmail on native UA and
+// let Google's "unsupported browser" page handle the fallback gracefully.
+const GOOGLE_APP_URLS = [
+  'https://calendar.google.com/*',
+  'https://docs.google.com/*',
+  'https://drive.google.com/*',
+  'https://meet.google.com/*',
+  'https://keep.google.com/*',
+  'https://contacts.google.com/*',
+  'https://photos.google.com/*',
+];
 
 const CHECK_ALLOWED = new Set([
   'fullscreen',
@@ -95,10 +115,20 @@ function hardenPartition(partition) {
   // doesn't see a Chromium claiming to be Chrome.
   ses.webRequest.onBeforeSendHeaders({ urls: CLOUDFLARE_URLS }, (details, callback) => {
     const h = details.requestHeaders;
-    h['User-Agent'] = CF_USER_AGENT;
+    h['User-Agent'] = CHROME_UA;
     h['Sec-CH-UA'] = SEC_CH_UA;
     h['Sec-CH-UA-Mobile'] = '?0';
     h['Sec-CH-UA-Platform'] = SEC_CH_UA_PLATFORM;
+    callback({ requestHeaders: h });
+  });
+
+  // Rewrite only User-Agent (no Sec-CH-UA hints) on Google product domains.
+  // Calendar/Docs/Drive/etc. only look at navigator.userAgent — skipping the
+  // hints keeps JS and HTTP consistent for sub-resources that may bounce
+  // back to accounts.google.com.
+  ses.webRequest.onBeforeSendHeaders({ urls: GOOGLE_APP_URLS }, (details, callback) => {
+    const h = details.requestHeaders;
+    h['User-Agent'] = CHROME_UA;
     callback({ requestHeaders: h });
   });
 
