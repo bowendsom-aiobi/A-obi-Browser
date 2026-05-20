@@ -8,7 +8,30 @@ const configured = new Set();
 // Ads + tracking blocker (Ghostery's prebuilt EasyList/EasyPrivacy bundle).
 // Built once, attached to every partition that gets hardened. Fails open if
 // the prebuilt lists can't be fetched (no network) so the app keeps working.
-const blockerPromise = ElectronBlocker.fromPrebuiltFull(fetch).catch(() => null);
+//
+// Google sign-in fires telemetry/heartbeat requests (generate_204, play.google.com/log)
+// that EasyPrivacy blocks by default. When those fail with ERR_BLOCKED_BY_CLIENT,
+// Google classifies the browser as broken/automated → "browser may not be secure"
+// rejection. We layer ABP exception filters (@@) on top of the prebuilt bundle so
+// the blocker stays active everywhere else but lets the sign-in flow's own
+// integrity probes through.
+const GOOGLE_ALLOWLIST = [
+  '@@||accounts.google.com^',
+  '@@||accounts.youtube.com^',
+  '@@||apis.google.com^',
+  '@@||oauth2.googleapis.com^',
+  '@@||play.google.com/log',
+  '@@||www.google.com/generate_204',
+  '@@||clients4.google.com^',
+  '@@||clients6.google.com^',
+  '@@||ssl.gstatic.com^',
+];
+const blockerPromise = ElectronBlocker.fromPrebuiltFull(fetch)
+  .then((b) => {
+    b.updateFromDiff({ added: GOOGLE_ALLOWLIST });
+    return b;
+  })
+  .catch(() => null);
 
 // A clean Chrome User-Agent (no "Electron/" nor app-name tokens). It is set
 // at the Chromium PROCESS level (index.js: --user-agent switch) so Chromium
@@ -30,15 +53,18 @@ function buildUserAgent() {
 
 const USER_AGENT = buildUserAgent();
 
-// Chromium does NOT regenerate Sec-CH-UA from the `--user-agent` switch — those
-// headers are derived from the embedder's build metadata, so Electron always
-// emits a brand list missing "Google Chrome". The Google sign-in flow reads
-// both the HTTP Sec-CH-UA AND navigator.userAgentData.brands (spoofed in the
-// preload) and rejects the request when they don't match → "browser may not
-// be secure". We patch only the LOW-entropy hints (UA/Mobile/Platform), scoped
-// to the sign-in / OAuth endpoints, so Calendar's data API (which compares
-// HTTP high-entropy hints against getHighEntropyValues()) is untouched.
+// Chromium does NOT regenerate Sec-CH-UA from the `--user-agent` switch, and
+// (electron#34762) it also never auto-sends the HIGH-entropy hints requested
+// via Accept-CH. Google's /AccountsSignInUi/browserinfo endpoint compares the
+// HTTP hints against navigator.userAgentData.getHighEntropyValues() (spoofed
+// in preload/bridge.js) — any mismatch → "browser may not be secure".
+// We force-emit every hint Google asks for, with values matching bridge.js
+// EXACTLY, scoped to the sign-in/OAuth endpoints so Calendar/Gmail/Drive
+// receive nothing here and keep behaving like before.
+const SEC_CH_UA_ARCH_VALUE = process.arch === 'arm64' ? 'arm' : 'x86';
+const SEC_CH_UA_PLATFORM_VERSION_VALUE = '14.0.0';
 const SEC_CH_UA = `"Not(A:Brand";v="99", "Google Chrome";v="${CHROME_MAJOR}", "Chromium";v="${CHROME_MAJOR}"`;
+const SEC_CH_UA_FULL_VERSION_LIST = `"Not(A:Brand";v="99.0.0.0", "Google Chrome";v="${CHROME_VERSION}", "Chromium";v="${CHROME_VERSION}"`;
 const SEC_CH_UA_PLATFORM =
   process.platform === 'darwin' ? '"macOS"' :
   process.platform === 'win32'  ? '"Windows"' : '"Linux"';
@@ -83,10 +109,19 @@ function hardenPartition(partition) {
   ses.setSpellCheckerLanguages(['en-US', 'fr']);
 
   ses.webRequest.onBeforeSendHeaders({ urls: GOOGLE_SIGNIN_URLS }, (details, callback) => {
-    details.requestHeaders['Sec-CH-UA'] = SEC_CH_UA;
-    details.requestHeaders['Sec-CH-UA-Mobile'] = '?0';
-    details.requestHeaders['Sec-CH-UA-Platform'] = SEC_CH_UA_PLATFORM;
-    callback({ requestHeaders: details.requestHeaders });
+    const h = details.requestHeaders;
+    h['Sec-CH-UA'] = SEC_CH_UA;
+    h['Sec-CH-UA-Mobile'] = '?0';
+    h['Sec-CH-UA-Platform'] = SEC_CH_UA_PLATFORM;
+    h['Sec-CH-UA-Platform-Version'] = `"${SEC_CH_UA_PLATFORM_VERSION_VALUE}"`;
+    h['Sec-CH-UA-Arch'] = `"${SEC_CH_UA_ARCH_VALUE}"`;
+    h['Sec-CH-UA-Bitness'] = '"64"';
+    h['Sec-CH-UA-Model'] = '""';
+    h['Sec-CH-UA-WoW64'] = '?0';
+    h['Sec-CH-UA-Form-Factors'] = '"Desktop"';
+    h['Sec-CH-UA-Full-Version'] = `"${CHROME_VERSION}"`;
+    h['Sec-CH-UA-Full-Version-List'] = SEC_CH_UA_FULL_VERSION_LIST;
+    callback({ requestHeaders: h });
   });
 
   blockerPromise.then((b) => b && b.enableBlockingInSession(ses)).catch(() => {});
