@@ -53,14 +53,42 @@ export const STRINGS = {
     'cta.sub': 'Direct download, free, no account.',
     'note.mac': 'macOS: on first launch, right-click the app → Open.',
   },
+  mos: {
+    'nav.features': 'sẽn tõe maan',
+    'nav.download': 'Dike n keese',
+    'hero.title': 'Aïobi Browser',
+    'hero.primary': 'Dike n keese',
+    'hero.for': 'yĩnga',
+    'hero.free': 'Yaa zaalem · macOS, Windows, Linux',
+    'hero.other': 'Bõn-teed a taaba',
+    'dl.mac': 'macOS',
+    'dl.win': 'Windows',
+    'dl.linux': 'Linux',
+    'dl.mac.sub': 'Apple Silicon · .dmg',
+    'dl.win.sub': 'Sɩgldga · .exe',
+    'dl.linux.sub': 'AppImage',
+    'show.title': 'Naaneg sẽn na yɩ vẽeneg',
+    'show.sub': 'Kɩɩlg sẽn yaa vẽeneg sɛɛga, y onglã sẽn be goabgã, tɩ sẽn ket-a fãa booge.',
+    'feat.title': 'Sẽn tar yõod fãa, tɩ sẽn pa tar yõod ka be ye',
+    'feat.left.t': 'IA sõsg & Tẽegse',
+    'feat.left.d': 'Aïobi sõngda na be pɛɛlg pʋgẽ, tɩ y pa basd y seokã. Y tẽegsã, ne nug-tʋʋm a yembr bal.',
+    'feat.right.t': 'Aïobi World',
+    'feat.right.d': 'Docs, Sheets, Drive, Forms, Mail, Meet, Calendar — y tʋʋm-teedã sẽn naag taaba, tɩ yaa ne pãbg a yembr bal.',
+    'cta.title': 'Y segla n na maka?',
+    'cta.sub': 'Deegr tɩrga, yaa zaalem, sẽn ka baood kõnt ye.',
+    'note.mac': 'macOS : pi-pi pakr sasa, pãb ne rɩtg app zug → Pak.',
+  },
 };
+
+const SUPPORTED = new Set(['fr', 'en', 'mos']);
 
 export function pickLang() {
   try {
     const saved = localStorage.getItem('aiobi-lang');
-    if (saved === 'fr' || saved === 'en') return saved;
+    if (SUPPORTED.has(saved)) return saved;
   } catch {}
   const n = (typeof navigator !== 'undefined' && navigator.language) || 'fr';
+  if (/^mos/i.test(n)) return 'mos';
   return /^en/i.test(n) ? 'en' : 'fr';
 }
 

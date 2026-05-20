@@ -73,8 +73,11 @@ function currentEngine() {
   return getEngine(settings.read().searchEngineId);
 }
 
+const SUPPORTED_LANGS = new Set(['fr', 'en', 'mos']);
+
 function currentLang() {
-  return settings.read().lang === 'en' ? 'en' : 'fr';
+  const l = settings.read().lang;
+  return SUPPORTED_LANGS.has(l) ? l : 'fr';
 }
 
 const menuActions = {
@@ -539,7 +542,7 @@ function wireIpc() {
   ipcMain.handle(
     'lang:set',
     internalOnly((_e, code) => {
-      settings.write({ lang: code === 'en' ? 'en' : 'fr' });
+      settings.write({ lang: SUPPORTED_LANGS.has(code) ? code : 'fr' });
       applyMenu();
       broadcastLang();
       return currentLang();

@@ -88,6 +88,7 @@ async function render() {
     for (const opt of [
       { code: 'fr', name: 'Français' },
       { code: 'en', name: 'English' },
+      { code: 'mos', name: 'Mooré' },
     ]) {
       const sel = I.lang() === opt.code;
       const row = el('div', 'row engine' + (sel ? ' selected' : ''));
