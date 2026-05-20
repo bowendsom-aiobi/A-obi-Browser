@@ -8,7 +8,7 @@ const configured = new Set();
 // Ads + tracking blocker (Ghostery's prebuilt EasyList/EasyPrivacy bundle).
 // Built once, attached to every partition that gets hardened. Fails open if
 // the prebuilt lists can't be fetched (no network) so the app keeps working.
-const blockerPromise = ElectronBlocker.fromPrebuiltAdsAndTracking(fetch).catch(() => null);
+const blockerPromise = ElectronBlocker.fromPrebuiltFull(fetch).catch(() => null);
 
 // A clean Chrome User-Agent (no "Electron/" nor app-name tokens). It is set
 // at the Chromium PROCESS level (index.js: --user-agent switch) so Chromium
