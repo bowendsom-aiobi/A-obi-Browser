@@ -6,7 +6,7 @@ const { app, BaseWindow, WebContentsView, ipcMain, shell, dialog, session } = re
 const { TabManager } = require('./tabs');
 const { GEOM, compute, clampChat, findRect } = require('./layout');
 const { getEngine, resolveInput, SEARCH_ENGINES } = require('./search-engines');
-const { hardenPartition, USER_AGENT } = require('./session');
+const { hardenPartition } = require('./session');
 const { buildAppMenu } = require('./menu');
 const i18n = require('./i18n');
 const downloads = require('./downloads');
@@ -26,8 +26,10 @@ const CHAT_GRIP_HTML = path.join(RENDERER, 'chat-grip.html');
 const FIND_HTML = path.join(RENDERER, 'find.html');
 const EDGE_HTML = path.join(RENDERER, 'edge.html');
 
-app.userAgentFallback = USER_AGENT;
-app.commandLine.appendSwitch('user-agent', USER_AGENT);
+// No global UA spoof: lying as Chrome process-wide created mismatches
+// (JS vs HTTP hints) that Google's sign-in classified as "browser may not
+// be secure". Native Electron UA everywhere except the Cloudflare challenge
+// iframe — see session.js for the scoped rewrite.
 app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
 app.commandLine.appendSwitch(
   'disable-features',

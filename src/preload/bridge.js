@@ -1,51 +1,6 @@
 'use strict';
 
-const { contextBridge, ipcRenderer, webFrame } = require('electron');
-
-// Inject a real-Chrome-shaped JS environment into the MAIN world before any
-// page script runs. Needed because Google's OAuth "less secure browser" check
-// fingerprints navigator.userAgentData + window.chrome, beyond the UA string.
-(() => {
-  const full = process.versions.chrome || '120.0.0.0';
-  const major = full.split('.')[0];
-  const platform =
-    process.platform === 'darwin' ? 'macOS' : process.platform === 'win32' ? 'Windows' : 'Linux';
-  const arch = process.arch === 'arm64' ? 'arm' : 'x86';
-  // Values MUST mirror session.js's webRequest Sec-CH-UA rewrite for Google
-  // sign-in (browserinfo endpoint compares JS vs HTTP — any diff = block).
-  webFrame.executeJavaScript(
-    `(() => {
-      try {
-        const brands = [
-          { brand: 'Not(A:Brand', version: '99' },
-          { brand: 'Google Chrome', version: '${major}' },
-          { brand: 'Chromium', version: '${major}' },
-        ];
-        const fullVersionList = [
-          { brand: 'Not(A:Brand', version: '99.0.0.0' },
-          { brand: 'Google Chrome', version: '${full}' },
-          { brand: 'Chromium', version: '${full}' },
-        ];
-        const uaData = {
-          brands, mobile: false, platform: '${platform}',
-          getHighEntropyValues() {
-            return Promise.resolve({
-              brands, mobile: false, platform: '${platform}',
-              platformVersion: '14.0.0', architecture: '${arch}', bitness: '64', model: '',
-              uaFullVersion: '${full}', fullVersionList,
-              wow64: false, formFactor: ['Desktop'],
-            });
-          },
-          toJSON() { return { brands, mobile: false, platform: '${platform}' }; },
-        };
-        try { Object.defineProperty(navigator, 'userAgentData', { value: uaData, configurable: true }); } catch (e) {}
-        try { if (!window.chrome) window.chrome = {}; if (!window.chrome.runtime) window.chrome.runtime = { id: undefined }; } catch (e) {}
-        try { Object.defineProperty(navigator, 'webdriver', { value: undefined, configurable: true }); } catch (e) {}
-      } catch (e) {}
-    })();`,
-    true
-  ).catch(() => {});
-})();
+const { contextBridge, ipcRenderer } = require('electron');
 
 const i18nData = ipcRenderer.sendSync('i18n:get');
 let curLang = i18nData.lang;
