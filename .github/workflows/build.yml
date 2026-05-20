@@ -57,8 +57,10 @@ jobs:
 
       - run: npm run --silent smoke
 
-      - name: Build
-        run: npx --no-install electron-builder --publish never
+      - name: Build + publish to GitHub Release (incl. latest-*.yml manifests)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx --no-install electron-builder --publish always
 
       - uses: actions/upload-artifact@v6
         with:
@@ -69,28 +71,6 @@ jobs:
             dist/*.AppImage
             dist/*.deb
             dist/*.exe
+            dist/latest*.yml
           if-no-files-found: ignore
           retention-days: 14
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v6
-        with:
-          path: artifacts
-          merge-multiple: true
-
-      - name: Publish GitHub Release (public download assets)
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          generate_release_notes: true
-          fail_on_unmatched_files: false
-          files: |
-            artifacts/Aiobi-Browser-mac-*.dmg
-            artifacts/Aiobi-Browser-windows-*.exe
-            artifacts/Aiobi-Browser-linux-*.AppImage
-            artifacts/Aiobi-Browser-linux-*.deb

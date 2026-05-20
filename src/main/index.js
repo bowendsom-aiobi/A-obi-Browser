@@ -574,7 +574,18 @@ app.whenReady().then(() => {
 
   if (app.isPackaged) {
     try {
-      require('electron-updater').autoUpdater.checkForUpdatesAndNotify();
+      const { autoUpdater } = require('electron-updater');
+      autoUpdater.logger = console;
+      autoUpdater.autoDownload = true;
+      autoUpdater.autoInstallOnAppQuit = true;
+      autoUpdater.on('error', (err) => console.error('[updater]', err && err.message));
+      autoUpdater.on('update-available', (info) =>
+        console.log('[updater] update available', info && info.version)
+      );
+      autoUpdater.on('update-downloaded', (info) =>
+        console.log('[updater] update downloaded, will install on quit', info && info.version)
+      );
+      autoUpdater.checkForUpdatesAndNotify().catch(() => {});
     } catch {
       /* updater unavailable */
     }
