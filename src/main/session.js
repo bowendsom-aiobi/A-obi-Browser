@@ -18,6 +18,7 @@ const blockerPromise = ElectronBlocker.fromPrebuiltAdsAndTracking(fetch).catch((
 // Calendar's data API consistency check (Gmail tolerated it, Calendar did
 // not). This UA string is exported for app.userAgentFallback + the switch.
 const CHROME_VERSION = process.versions.chrome || '120.0.0.0';
+const CHROME_MAJOR = CHROME_VERSION.split('.')[0];
 
 function buildUserAgent() {
   let platform;
@@ -28,6 +29,24 @@ function buildUserAgent() {
 }
 
 const USER_AGENT = buildUserAgent();
+
+// Chromium does NOT regenerate Sec-CH-UA from the `--user-agent` switch — those
+// headers are derived from the embedder's build metadata, so Electron always
+// emits a brand list missing "Google Chrome". The Google sign-in flow reads
+// both the HTTP Sec-CH-UA AND navigator.userAgentData.brands (spoofed in the
+// preload) and rejects the request when they don't match → "browser may not
+// be secure". We patch only the LOW-entropy hints (UA/Mobile/Platform), scoped
+// to the sign-in / OAuth endpoints, so Calendar's data API (which compares
+// HTTP high-entropy hints against getHighEntropyValues()) is untouched.
+const SEC_CH_UA = `"Not(A:Brand";v="99", "Google Chrome";v="${CHROME_MAJOR}", "Chromium";v="${CHROME_MAJOR}"`;
+const SEC_CH_UA_PLATFORM =
+  process.platform === 'darwin' ? '"macOS"' :
+  process.platform === 'win32'  ? '"Windows"' : '"Linux"';
+const GOOGLE_SIGNIN_URLS = [
+  'https://accounts.google.com/*',
+  'https://accounts.youtube.com/*',
+  'https://oauth2.googleapis.com/*',
+];
 
 const CHECK_ALLOWED = new Set([
   'fullscreen',
@@ -61,6 +80,14 @@ function hardenPartition(partition) {
   const ses = session.fromPartition(partition);
 
   ses.setUserAgent(USER_AGENT);
+  ses.setSpellCheckerLanguages(['en-US', 'fr']);
+
+  ses.webRequest.onBeforeSendHeaders({ urls: GOOGLE_SIGNIN_URLS }, (details, callback) => {
+    details.requestHeaders['Sec-CH-UA'] = SEC_CH_UA;
+    details.requestHeaders['Sec-CH-UA-Mobile'] = '?0';
+    details.requestHeaders['Sec-CH-UA-Platform'] = SEC_CH_UA_PLATFORM;
+    callback({ requestHeaders: details.requestHeaders });
+  });
 
   blockerPromise.then((b) => b && b.enableBlockingInSession(ses)).catch(() => {});
 
