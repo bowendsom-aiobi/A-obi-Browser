@@ -14,6 +14,7 @@ const state = {
   order: [],
   activeId: null,
   lastSubmit: null,
+  pendingNav: null,
   dragId: null,
   bookmarks: [],
   dragUrl: null,
@@ -104,7 +105,13 @@ function renderActive() {
   els.bookmark.title = tab && tab.bookmarked ? t('bookmark_rm') : t('bookmark_add');
 
   if (tab && document.activeElement !== els.address) {
-    els.address.value = isInternal(tab.url) ? '' : tab.url;
+    const p = state.pendingNav;
+    if (p && tab.url === p.fromUrl) {
+      els.address.value = p.value;
+    } else {
+      if (p) state.pendingNav = null;
+      els.address.value = isInternal(tab.url) ? '' : tab.url;
+    }
   }
 }
 
@@ -366,6 +373,7 @@ els.address.addEventListener('keydown', (event) => {
 
   state.lastSubmit = value;
   if (tab) {
+    state.pendingNav = { fromUrl: tab.url, value };
     tab.loading = true;
     els.app.classList.add('loading'); // optimistic feedback
   }
